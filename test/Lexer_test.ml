@@ -21,7 +21,6 @@ let simple_token_results : (string * Token.token_type) list =
     ("$", Token.Undefined);
   ]
 
-
 let simple_token_test =
   "simple token test"
   >::: (simple_token_results
