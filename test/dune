@@ -1,0 +1,3 @@
+(test
+ (name Datalog_interpreter_test)
+ (libraries ounit2 Datalog_interpreter))

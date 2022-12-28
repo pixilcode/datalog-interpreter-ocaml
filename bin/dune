@@ -1,0 +1,4 @@
+(executable
+ (public_name Datalog_interpreter)
+ (name main)
+ (libraries Datalog_interpreter))

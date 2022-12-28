@@ -1,0 +1,32 @@
+module Token = struct
+  type token_type =
+    | Comma
+    | Period
+    | QMark
+    | LeftParen
+    | RightParen
+    | ColonDash
+    | Colon
+    | Multiply
+    | Add
+    | Schemes
+    | Facts
+    | Rules
+    | Queries
+    | Id
+    | String
+    | Undefined
+    | Eof
+
+  type token = {
+    tType: token_type;
+    lexeme: string;
+    offset: int;
+  }
+
+  let matches tokenA tokenB = tokenA.tType = tokenB.tType
+end
+
+type input = string
+
+let lex _input = Error ""
