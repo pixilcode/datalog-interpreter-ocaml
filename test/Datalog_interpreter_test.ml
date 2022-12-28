@@ -1,2 +1,1 @@
 Lexer_test.run ()
-;;

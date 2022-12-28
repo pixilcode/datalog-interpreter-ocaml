@@ -18,15 +18,12 @@ module Token : sig
     | Undefined
     | Eof
 
-  type token = {
-    tType: token_type;
-    lexeme: string;
-    offset: int;
-  }
+  type t = { tType : token_type; lexeme : string; offset : int }
 
-  val matches : token -> token -> bool
+  val make_token : token_type -> string -> int -> t
+  val matches : t -> t -> bool
 end
 
 type input = string
 
-val lex : input -> (Token.token list, string) result 
+val lex : input -> (Token.t list, string) result

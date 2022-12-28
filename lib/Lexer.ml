@@ -18,12 +18,9 @@ module Token = struct
     | Undefined
     | Eof
 
-  type token = {
-    tType: token_type;
-    lexeme: string;
-    offset: int;
-  }
+  type t = { tType : token_type; lexeme : string; offset : int }
 
+  let make_token tType lexeme offset = { tType; lexeme; offset }
   let matches tokenA tokenB = tokenA.tType = tokenB.tType
 end
 
