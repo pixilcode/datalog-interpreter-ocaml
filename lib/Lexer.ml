@@ -81,6 +81,16 @@ let consume_token t_type length lex_state =
   ( Token.make t_type (lex_state#get_lexeme length) lex_state#curr_offset,
     lex_state#advance length )
 
+let rec find_string_end ?(length = 1) lex_state =
+  match lex_state#peek_ahead length with
+  | Some '\'' -> length + 1
+  | Some _ -> find_string_end ~length:(length + 1) lex_state
+  | None -> failwith "Unimplemented string EOF handling"
+
+let consume_string lex_state =
+  if not (lex_state#peek = Some '\'') then invalid_arg "lex_state (consume_string)"
+  else let string_length = find_string_end lex_state in consume_token Token.String string_length lex_state
+
 let lex_token lex_state =
   match lex_state#peek with
   | Some ',' -> consume_token Token.Comma 1 lex_state
@@ -94,7 +104,7 @@ let lex_token lex_state =
       | _ -> consume_token Token.Colon 1 lex_state)
   | Some '*' -> consume_token Token.Multiply 1 lex_state
   | Some '+' -> consume_token Token.Add 1 lex_state
-  (* | Some '\'' -> consume_string lex_state *)
+  | Some '\'' -> consume_string lex_state
   | _ ->
       if lex_state#is_at_end then consume_token Token.Eof 0 lex_state
       else consume_token Token.Undefined 1 lex_state

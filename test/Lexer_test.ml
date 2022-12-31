@@ -27,6 +27,7 @@ let simple_token_results : (string * Token.token_type) list =
     ("Rules", Token.Rules);
     ("Queries", Token.Queries);
     ("abc", Token.Id);
+    ("''", Token.String);
     ("'abc'", Token.String);
     ("$", Token.Undefined);
   ]
@@ -49,5 +50,6 @@ let simple_token_test =
                 lex_result))
 
 (* TODO: Write tests for ignoring comments and whitespace *)
+(* TODO: Test unclosed strings *)
 let ignore_comment_results () = assert false
 let run () = run_test_tt_main simple_token_test
