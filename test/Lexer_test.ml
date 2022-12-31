@@ -1,6 +1,13 @@
 open OUnit2
 open Datalog_interpreter.Lexer
 
+module Util = struct
+  let lexer_result_to_string (lexer_result: (Token.t list, input) result) =
+    match lexer_result with
+      | Ok token_list -> "[" ^ (token_list |> List.map Token.to_string |> String.concat ", ") ^ "]"
+      | Error error -> ("Error: " ^ error)
+end
+
 let simple_token_results : (string * Token.token_type) list =
   [
     (",", Token.Comma);
@@ -30,12 +37,12 @@ let simple_token_test =
                 lex_result,
                 Ok
                   [
-                    Token.make_token expected input 0;
-                    Token.make_token Token.Eof input (String.length input);
+                    Token.make expected input 0;
+                    Token.make Token.Eof "" (String.length input);
                   ] ))
        |> List.map (fun (input, lex_result, expected) ->
               "`" ^ input ^ "` test" >:: fun _ ->
-              assert_equal expected lex_result))
+              assert_equal ~printer:Util.lexer_result_to_string expected lex_result))
 
 (* TODO: Write tests for ignoring comments and whitespace *)
 let ignore_comment_results () = assert false
