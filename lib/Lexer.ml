@@ -74,7 +74,6 @@ class lexer_state ?(curr_offset = 0) source =
       else new lexer_state ~curr_offset:(curr_offset + n_chars) source
 
     method is_in_bounds n_chars = curr_offset + n_chars < String.length source
-    method is_at_end = not (self#is_in_bounds 0)
   end
 
 let consume_token t_type length lex_state =
@@ -105,9 +104,8 @@ let lex_token lex_state =
   | Some '*' -> consume_token Token.Multiply 1 lex_state
   | Some '+' -> consume_token Token.Add 1 lex_state
   | Some '\'' -> consume_string lex_state
-  | _ ->
-      if lex_state#is_at_end then consume_token Token.Eof 0 lex_state
-      else consume_token Token.Undefined 1 lex_state
+  | Some _ -> consume_token Token.Undefined 1 lex_state
+  | None -> consume_token Token.Eof 0 lex_state
 
 let rec lex' ?(tokens = Queue.create ()) lexer_state =
   let token, lexer_state = lex_token lexer_state in
