@@ -42,7 +42,7 @@ module Token = struct
 
   let make t_type lexeme offset = { t_type; lexeme; offset }
   let matches_type t_type token = token.t_type = t_type
-  let format_t ppf token = Format.fprintf ppf "[offset %d: %s \"%s\"]" token.offset (token_type_to_string token.t_type) token.lexeme
+  let format_t ppf token = Format.fprintf ppf "<offset %d: %s \"%s\">" token.offset (token_type_to_string token.t_type) token.lexeme
   let to_string token = Format.asprintf "%a" format_t token
 end
 
@@ -68,6 +68,7 @@ class lexer_state ?(curr_offset = 0) source =
       else new lexer_state ~curr_offset:(curr_offset + n_chars) source
 
     method is_in_bounds n_chars = (curr_offset + n_chars) < (String.length source)
+    method is_at_end = not (self#is_in_bounds 0)
   end
 
 let consume_token t_type length lex_state =
@@ -89,10 +90,15 @@ let lex_token lex_state =
   | Some '*' -> consume_token Token.Multiply 1 lex_state
   | Some '+' -> consume_token Token.Add 1 lex_state
   (* | '\'' -> consume_string lex_state *)
-  | _ -> consume_token Token.Eof 0 lex_state
+  | _ -> if lex_state#is_at_end then consume_token Token.Eof 0 lex_state else consume_token Token.Undefined 1 lex_state
+
+let rec lex' ?(tokens = Queue.create ()) lexer_state =
+  let (token, lexer_state) = lex_token lexer_state in
+  Queue.add token tokens;
+  if Token.matches_type Token.Eof token
+  then Ok (tokens |> Queue.to_seq |> List.of_seq)
+  else lex' ~tokens lexer_state
 
 let lex input =
   new lexer_state input
-  |> lex_token
-  |> fst
-  |> fun a -> Ok [a]
+  |> lex'
