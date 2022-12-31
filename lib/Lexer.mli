@@ -24,8 +24,8 @@ module Token : sig
   val matches_type : token_type -> t -> bool
 
   (* Formatting *)
-  val format_t: Format.formatter -> t -> unit
-  val to_string: t -> string
+  val format_t : Format.formatter -> t -> unit
+  val to_string : t -> string
 end
 
 type input = string
